@@ -1,3 +1,7 @@
 pandas
 transformers
 openai
+pytesseract==0.3.10
+pdf2image 
+python-pptx 
+pillow
