@@ -29,7 +29,9 @@ class Job(Base):
     media_path = Column(String, nullable=True)
     transcript_path = Column(String, nullable=True)
     slides_count = Column(Integer, default=0)
-    slides_path= Column(String, nullable=True)
+    slides_pdf_path = Column(String, nullable=True)   # Path to uploaded PDF (if any)
+    slides_ppt_path = Column(String, nullable=True)   # Path to uploaded PPT/PPTX (if any)
+    slides_image_dir = Column(String, nullable=True)  # Directory containing slide images (from upload or extraction)
 
 def create_tables():
     # creating tables and migrating database(adding missing columns) if required 

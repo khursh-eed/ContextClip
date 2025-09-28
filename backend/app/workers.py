@@ -53,17 +53,17 @@ async def process_job(job_id: str):
                 segments_df.to_csv(segments_path, index=False)
                 print(f"Saved segments to {segments_path}")
                 
-                # Process slides if available
-                slides_dir = f"{job_storage_path}/slides"
-                slide_links = {}
-                
-                if os.path.exists(slides_dir) and job.slides_count > 0:
-                    print(f"Processing {job.slides_count} slides...")
-                    
-                    # Extract text from slides using OCR
-                    extract_slides_from_file(job.slides_path ,slides_dir)
-                    # Now slides_dir will contain images, ready for process_slides(slides_dir)
-                    slide_texts = process_slides(slides_dir)
+                slides_images_dir = job.slides_image_dir
+                os.makedirs(slides_images_dir, exist_ok=True)
+                if job.slides_pdf_path:
+                    print(f"Extracting images from PDF: {job.slides_pdf_path}")
+                    convert_pdf_to_images(job.slides_pdf_path, slides_images_dir)
+                if job.slides_ppt_path:
+                    print(f"Extracting images from PPT: {job.slides_ppt_path}")
+                    convert_ppt_to_images(job.slides_ppt_path, slides_images_dir)
+                if os.path.exists(slides_images_dir):
+                    print(f"Processing slides in {slides_images_dir}...")
+                    slide_texts = process_slides(slides_images_dir)
                     
                     if slide_texts:
                         # Link slides to transcript timestamps
