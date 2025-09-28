@@ -6,6 +6,7 @@ from datetime import datetime
 import re
 from collections import Counter
 from typing import List
+from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
 
 
 try:
@@ -81,7 +82,6 @@ class MeetingSummarizer:
             
         except Exception as e:
             print(f"Error loading Hugging Face model: {e}")
-            # Fallback to a simpler model
             print("Falling back to mock summarization...")
             self.generator = None
             self.model_type_pipeline = "mock"
@@ -111,7 +111,6 @@ class MeetingSummarizer:
     def _build_prompt(self, segments_text: str) -> str:
 
         # take the formated segments and return prompt string
-        
         prompt = f"""Given the following time-ordered speaker segments: 
 
             {segments_text}
@@ -160,23 +159,26 @@ class MeetingSummarizer:
                 return json.loads(json_str)
             else:
                 # If no JSON found, create a fallback structure
-                return self._create_fallback_summary(response_text)
+                # skipping this for now
+                print("failed to create summary")
+                return []
                 
         except json.JSONDecodeError:
             print("Warning: Could not parse LLM response as JSON, using fallback")
-            return self._create_fallback_summary(response_text)
+            return []
         
     
 
     def _convert_bart_to_structured(self, bart_summary: str, original_prompt: str) -> str:
-    
+        # to convert the bart output to required format,if json was not extractable
+
         def extract_assignees(text: str) -> List[str]:
-            # Try to extract capitalized words or name patterns from action text as assignees
-            # Ignore common filler words matched repeatedly, but keep proper nouns/names
+            # extract capitalized words or name patterns from action text as assignees
+            # ignore common filler words matched repeatedly, but keep proper nouns/names
+
             assignees = set()
-            # Simple pattern to find capitalized words (names)
             candidates = re.findall(r'\b[A-Z][a-z]{1,}\b', text)
-            # Filter some common non-assignee words
+            # filter some common non-assignee words
             ignore_list = {"Friday", "Monday", "Next", "Team", "Action", "Items"}
             for c in candidates:
                 if c not in ignore_list:
@@ -191,7 +193,7 @@ class MeetingSummarizer:
                 segments_text = original_prompt[segments_start:segments_end]
                 lines = segments_text.split('\n')
 
-                # Broader action keywords, add more verbs and modal verbs for generality
+            
                 action_keywords = [
                     'prepare', 'schedule', 'coordinate', 'by', 'next', 'demo', 'uat', 'update',
                     'notify', 'handle', 'can you', 'should we', 'action items are', 'prepares',
@@ -277,8 +279,6 @@ class MeetingSummarizer:
             return f'{{"meeting_summary": ["{bart_summary}"], "action_items": []}}'
     
     def _generate_with_huggingface(self, prompt: str) -> str:
-        """Generate response using Hugging Face model."""
-
 
         # we already defined generator using the pipeline method, and now just using it if it exists
         if self.generator is None:

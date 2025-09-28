@@ -40,6 +40,7 @@ async def process_job(job_id: str):
                 print(f"Transcription completed, got {len(transcript_data.get('segments', []))} segments")
                 
                 # saving segments and transcript
+                
                 job_storage_path = f"storage/{job_id}"
                 transcript_path = f"{job_storage_path}/transcript.json"
                 segments_path = f"{job_storage_path}/segments.csv"
@@ -126,6 +127,8 @@ async def preprocess_audio(input_path: str, job_id: str) -> str:
     try:
         job_storage_path = f"storage/{job_id}"
         output_path = f"{job_storage_path}/processed_audio.wav"
+        os.makedirs(job_storage_path, exist_ok=True)
+        
         
         print(f"Preprocessing audio: {input_path} -> {output_path}")
         
@@ -140,7 +143,11 @@ async def preprocess_audio(input_path: str, job_id: str) -> str:
         )
         
         # Run ffmpeg (overwrite output file)
-        ffmpeg.run(stream, overwrite_output=True, quiet=True)
+        try:
+            ffmpeg.run(stream, overwrite_output=True, quiet=True)
+        except ffmpeg.Error as e:
+            print('ffmpeg error:', e.stderr.decode())
+            return input_path
         
         print(f"Audio preprocessing completed: {output_path}")
         return output_path
@@ -161,11 +168,11 @@ async def transcribe_and_diarize(audio_path: str, job_id: str) -> Dict:
         except Exception as e:
             print(f"WhisperX failed ({e}), not falling back to OpenAI Whisper for now")
 
-            # try:
-            #     return await transcribe_with_openai_whisper(audio_path, job_id)
-            # except Exception as e:
-            #     print(f"OpenAI Whisper failed ({e}), using mock transcription")
-            #     return await transcribe_with_mock(audio_path, job_id)
+            try:
+                return await transcribe_with_openai_whisper(audio_path, job_id)
+            except Exception as e:
+                print(f"OpenAI Whisper failed ({e}), using mock transcription")
+                return await transcribe_with_mock(audio_path, job_id)
             
     except Exception as e:
         print(f"Error in transcription: {str(e)}")
@@ -235,15 +242,13 @@ async def transcribe_with_whisperx(audio_path: str, job_id: str) -> Dict:
         import whisperx
         import torch
 
-        # (needed to include mps for mac)
-        if torch.backends.mps.is_available():
-            device = "mps"
-        elif torch.cuda.is_available():
+        # do not inlcude mps for mac, since whisperX doesnt support mps
+        if torch.cuda.is_available():
             device = "cuda"
         else:
             device = "cpu"
 
-        if device in ["cuda", "mps"]:
+        if device in ["cuda"]:
             compute_type = "float16"
         else:
             compute_type = "int8"
@@ -256,7 +261,17 @@ async def transcribe_with_whisperx(audio_path: str, job_id: str) -> Dict:
         # 1. Transcribe with Whisper-small
         model = whisperx.load_model("small", device, compute_type=compute_type)
         audio = whisperx.load_audio(audio_path)
-        result = model.transcribe(audio, batch_size=16)
+        # result = model.transcribe(audio, batch_size=16)
+        result = model.transcribe(
+            audio,
+            batch_size=16,
+            multilingual=True,
+            max_new_tokens=128,
+            clip_timestamps=None,
+            hallucination_silence_threshold=0.1,
+            hotwords=None
+        )
+        
         
         # 2. Align whisper output
         model_a, metadata = whisperx.load_align_model(language_code=result["language"], device=device)
@@ -276,6 +291,48 @@ async def transcribe_with_whisperx(audio_path: str, job_id: str) -> Dict:
         }
     except Exception as e:
         print(f"WhisperX failed: {str(e)}")
+        raise
+async def transcribe_with_openai_whisper(audio_path: str, job_id: str) -> Dict:
+    """
+    Use OpenAI Whisper for transcription (local model, no diarization)
+    """
+    try:
+        import whisper
+        
+        print("Loading OpenAI Whisper model (small)")
+        
+        # Load the model (downloads on first use, then cached)
+        model = whisper.load_model("small")
+        
+        print(f"Transcribing audio: {audio_path}")
+        
+        # Transcribe the audio
+        result = model.transcribe(audio_path)
+        
+        # Convert to our format
+        segments = []
+        for segment in result.get("segments", []):
+            segments.append({
+                "start": segment.get("start", 0.0),
+                "end": segment.get("end", 0.0),
+                "text": segment.get("text", "").strip(),
+                "speaker": "SPEAKER_00"  # No diarization in OpenAI Whisper
+            })
+        
+        print(f"OpenAI Whisper completed: {len(segments)} segments")
+        print(f"Detected language: {result.get('language', 'unknown')}")
+        
+        return {
+            "language": result.get("language", "unknown"),
+            "segments": segments,
+            "job_id": job_id,
+            "model": "openai-whisper-small",
+            "audio_path": audio_path,
+            "full_text": result.get("text", "")
+        }
+        
+    except Exception as e:
+        print(f"OpenAI Whisper failed: {str(e)}")
         raise
 
 

@@ -1,2 +1,10 @@
 eval "$(ssh-agent -s)"
 eval "$(ssh-agent -s)".pub
+initdb.py
+adding_data.py
+verify.py
+contextclip.db
+ex.py
+harvard.wav
+testing.py
+storage

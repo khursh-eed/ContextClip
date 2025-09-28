@@ -2,9 +2,14 @@ from sqlalchemy import Column, Integer, String, DateTime, create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+from pathlib import Path
 import os
 import uuid
-DATABASE_URL = "sqlite:///./contextclip.db"
+# DATABASE_URL = "sqlite:///./contextclip.db"
+
+PROJECT_ROOT = Path(__file__).parent.parent.parent.resolve()  # adjust as needed
+DB_PATH = PROJECT_ROOT / "contextclip.db"
+DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
