@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///Users/khursheedfatima/Downloads/ContextClip/frontend/src/components/ThemeProvider.tsx"],"sourcesContent":["'use client';\nimport * as React from 'react';\nimport { ThemeProvider as NextThemesProvider } from 'next-themes';\nimport type { ThemeProviderProps } from 'next-themes';\n\nexport function ThemeProvider({ children, ...props }: ThemeProviderProps) {\n  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;\n}\n"],"names":[],"mappings":";;;;AAEA;AAFA;;;AAKO,SAAS,cAAc,EAAE,QAAQ,EAAE,GAAG,OAA2B;IACtE,qBAAO,6LAAC,mJAAA,CAAA,gBAAkB;QAAE,GAAG,KAAK;kBAAG;;;;;;AACzC;KAFgB","debugId":null}},
+    {"offset": {"line": 37, "column": 0}, "map": {"version":3,"sources":["file:///Users/khursheedfatima/Downloads/ContextClip/frontend/src/components/AppProviders.tsx"],"sourcesContent":["'use client';\nimport { ThemeProvider } from './ThemeProvider';\nimport { HeroUIProvider } from '@heroui/react';\n\nexport default function AppProviders({ children }: { children: React.ReactNode }) {\n  return (\n    <ThemeProvider attribute=\"class\" defaultTheme=\"dark\" enableSystem>\n      <HeroUIProvider>\n        {children}\n      </HeroUIProvider>\n    </ThemeProvider>\n  );\n}\n"],"names":[],"mappings":";;;;AACA;AACA;AAFA;;;;AAIe,SAAS,aAAa,EAAE,QAAQ,EAAiC;IAC9E,qBACE,6LAAC,sIAAA,CAAA,gBAAa;QAAC,WAAU;QAAQ,cAAa;QAAO,YAAY;kBAC/D,cAAA,6LAAC,mKAAA,CAAA,iBAAc;sBACZ;;;;;;;;;;;AAIT;KARwB","debugId":null}}]
+}

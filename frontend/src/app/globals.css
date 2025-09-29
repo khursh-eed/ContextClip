@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg-dark: #292826;
+  --color-bg-gradient: #697184;
+  --color-card: #F2F1EF;
+  --color-text-dark: #F2F1EF;
+  --color-text-light: #413F3D;
+  --color-accent: #697184;
+  --color-secondary: #B1A6A4;
+  --color-border: #D8CFD0;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-gradient) 100%);
+  color: var(--color-text-dark);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bg-card {
+  background-color: var(--color-card);
+}
+.text-accent {
+  color: var(--color-accent);
+}
+.text-secondary {
+  color: var(--color-secondary);
+}
+.border-card {
+  border-color: var(--color-border);
+}
+.bg-accent {
+  background-color: var(--color-accent);
+}

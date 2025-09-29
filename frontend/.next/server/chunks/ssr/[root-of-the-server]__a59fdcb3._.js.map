@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 15, "column": 0}, "map": {"version":3,"sources":["file:///Users/khursheedfatima/Downloads/ContextClip/frontend/src/app/providers.tsx"],"sourcesContent":["'use client';\n\nimport { HeroUIProvider } from \"@heroui/react\";\n\nexport function Providers({ children }: { children: React.ReactNode }) {\n  return (\n    <HeroUIProvider>\n      {children}\n    </HeroUIProvider>\n  );\n}\n"],"names":[],"mappings":";;;;AAEA;AAFA;;;AAIO,SAAS,UAAU,EAAE,QAAQ,EAAiC;IACnE,qBACE,8OAAC,gKAAA,CAAA,iBAAc;kBACZ;;;;;;AAGP","debugId":null}}]
+}

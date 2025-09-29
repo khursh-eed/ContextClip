@@ -8,3 +8,5 @@ ex.py
 harvard.wav
 testing.py
 storage
+node_modules/
+jspm_packages/
