@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# {{PROJECT_TITLE}}
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-heroui-app`](https://github.com/your-username/create-heroui-app).
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- ⚡️ **Next.js 15** with App Router
+- 🎨 **HeroUI** - Beautiful React components
+- 🔷 **TypeScript** - Type safety out of the box
+- 🎯 **Tailwind CSS** - Utility-first CSS framework
+- ☁️ **Cloudflare** - Ready for deployment
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+First, run the development server:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm dev
+# or
+npm run dev
+# or
+yarn dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+You can start editing the page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Learn More
+
+To learn more about the technologies used in this project:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [HeroUI Documentation](https://heroui.com) - learn about HeroUI components.
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - learn about Tailwind CSS.
+- [TypeScript Documentation](https://www.typescriptlang.org/docs) - learn about TypeScript.
+
+## Deploy on Cloudflare
+
+The easiest way to deploy your Next.js app is to use the Cloudflare integration:
+
+```bash
+pnpm deploy
+```
+
+This will build and deploy your app to Cloudflare Pages/Workers.
+
+You can also deploy to other platforms like [Vercel](https://vercel.com/new) or [Netlify](https://www.netlify.com/).
+
+## Project Structure
+
+```
+├── public/          # Static files
+├── src/
+│   └── app/         # App Router pages and layouts
+│       ├── globals.css    # Global styles
+│       ├── layout.tsx     # Root layout
+│       ├── page.tsx       # Home page
+│       └── providers.tsx  # HeroUI provider
+├── next.config.ts   # Next.js configuration
+├── tailwind.config.js     # Tailwind CSS configuration
+└── tsconfig.json    # TypeScript configuration
 ```
